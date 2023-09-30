@@ -225,6 +225,20 @@ public class Tablero {
 		}
 		return copia;
 	}
+        
+        public boolean checkVictoria(){
+            boolean res = true;
+            String color = this.tablero[0][0].getColor() ;
+            for(int i = 0; i < this.tablero.length && res; i++){
+                for(int j = 0; i < this.tablero[0].length && res; j++){
+                    if(!color.equals(this.tablero[i][j].getColor())){
+                        res = false;
+                    }
+                }
+            }
+            
+            return res;
+        }
 
 	public Ficha[][] getTablero() {
 		return this.tablero;

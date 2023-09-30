@@ -17,6 +17,11 @@ public class Tablero {
 		this.listaMovimientos = new ArrayList<Movimiento>();
 	}
 
+	public ArrayList<Movimiento> getSolucion() {
+		ArrayList<Movimiento> movimientos = new ArrayList<Movimiento>();
+		return movimientos;
+	}
+
 	public boolean retrocederMovimiento() {
 		boolean ret = false;
 
@@ -126,9 +131,7 @@ public class Tablero {
 		this.setTablero(new Ficha[filas][columnas]);
 		int xPos;
 		int yPos;
-		int fDir;
-		Ficha f = new Ficha('X', "ROJO");
-		char symbolo;
+		Ficha f;
 		String color = "ROJO";
 		if ((int) (Math.random() * 2) == 1) {
 			color = "AZUL";
@@ -137,83 +140,132 @@ public class Tablero {
 		while (nivel > 0) {
 			xPos = (int) (Math.random() * filas);
 			yPos = (int) (Math.random() * columnas);
-			fDir = (int) (Math.random() * 4);
 			if (this.tablero[xPos][yPos] == null) {
-				if (fDir == 0) {
-					// Horizontal
-					symbolo = '-';
-				} else if (fDir == 1) {
-					// Vertical
-					symbolo = '|';
-				} else if (fDir == 2) {
-					// Diagonal Izquierda
-					symbolo = '\\';
-				} else {
-					// Digaonal Derecha
-					symbolo = '/';
-				}
-				f = new Ficha(symbolo, color);
+				f = Ficha.generarAleatorio(color);
 				this.tablero[xPos][yPos] = f;
-				nivel--;
-			}
-		}
-		color = f.getColorOpuesto();
-		for (int i = 0; i < this.tablero.length; i++) {
-			for (int j = 0; j < this.tablero[0].length; j++) {
-				if (this.tablero[i][j] == null) {
-					fDir = (int) (Math.random() * 4);
-					if (fDir == 0) {
-						// Horizontal
-						symbolo = '-';
-					} else if (fDir == 1) {
-						// Vertical
-						symbolo = '|';
-					} else if (fDir == 2) {
-						// Diagonal Izquierda
-						symbolo = '\\';
-					} else {
-						// Digaonal Derecha
-						symbolo = '/';
-					}
-					this.tablero[i][j] = new Ficha(symbolo, color);
+				if (f.getSymbolo() == '-') {
+					this.rellenarHorizonal(f, xPos, yPos);
+				} else if (f.getSymbolo() == '|') {
+					this.rellenarVertical(f, xPos, yPos);
+				} else if (f.getSymbolo() == '/') {
+					this.rellenarDiagonalDerecha(f, xPos, yPos);
+				} else {
+					this.rellenarDiagonalIzquierda(f, xPos, yPos);
 				}
+				nivel--;
 			}
 		}
 		this.setOriginal(this.generarCopia(this.tablero));
 	}
 
+	public void rellenarDiagonalDerecha(Ficha f, int x, int y) {
+		int xPos = x;
+		int yPos = y;
+
+		// Rellenar hacia arriba
+		while (xPos >= 0 && yPos < this.tablero[0].length) {
+			if (this.tablero[xPos][yPos] != null && this.tablero[xPos][yPos] != f) {
+				this.tablero[xPos][yPos].invertirColor();
+			} else if (this.tablero[xPos][yPos] != f) {
+				this.tablero[xPos][yPos] = Ficha.generarAleatorio(f.getColor());
+			}
+			xPos--;
+			yPos++;
+		}
+		xPos = x;
+		yPos = y;
+
+		// Rellenar hacia arriba
+		while (xPos < this.tablero.length && yPos >= 0) {
+			if (this.tablero[xPos][yPos] != null && this.tablero[xPos][yPos] != f) {
+				this.tablero[xPos][yPos].invertirColor();
+			} else if (this.tablero[xPos][yPos] != f) {
+				this.tablero[xPos][yPos] = Ficha.generarAleatorio(f.getColor());
+			}
+			xPos++;
+			yPos--;
+		}
+	}
+
+	public void rellenarDiagonalIzquierda(Ficha f, int x, int y) {
+		int xPos = x;
+		int yPos = y;
+
+		// Rellenar hacia arriba
+		while (xPos >= 0 && yPos >= 0) {
+			if (this.tablero[xPos][yPos] != null && this.tablero[xPos][yPos] != f) {
+				this.tablero[xPos][yPos].invertirColor();
+			} else if (this.tablero[xPos][yPos] != f) {
+				this.tablero[xPos][yPos] = Ficha.generarAleatorio(f.getColor());
+			}
+			xPos--;
+			yPos--;
+		}
+		xPos = x;
+		yPos = y;
+
+		// Rellenar hacia arriba
+		while (xPos < this.tablero.length && yPos < this.tablero[0].length) {
+			if (this.tablero[xPos][yPos] != null && this.tablero[xPos][yPos] != f) {
+				this.tablero[xPos][yPos].invertirColor();
+			} else if (this.tablero[xPos][yPos] != f) {
+				this.tablero[xPos][yPos] = Ficha.generarAleatorio(f.getColor());
+			}
+			xPos++;
+			yPos++;
+		}
+
+	}
+
+	public void rellenarHorizonal(Ficha f, int x, int y) {
+		for (int i = 0; i < this.tablero[0].length; i++) {
+			if (this.tablero[x][i] != null && this.tablero[x][i] != f) {
+				this.tablero[x][i].invertirColor();
+			} else if (this.tablero[x][i] != f) {
+				this.tablero[x][i] = Ficha.generarAleatorio(f.getColor());
+			}
+		}
+	}
+
+	public void rellenarVertical(Ficha f, int x, int y) {
+		for (int i = 0; i < this.tablero.length; i++) {
+			if (this.tablero[i][y] != null && this.tablero[i][y] != f) {
+				this.tablero[i][y].invertirColor();
+			} else if (this.tablero[i][x] != f) {
+				this.tablero[i][y] = Ficha.generarAleatorio(f.getColor());
+			}
+		}
+	}
+
 	public void generarPorLectura() {
-            
-            String nombreArchivo = "datos.txt";
-        
-            try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
-                String linea;
-                linea = br.readLine();
-                String[] pos = linea.split(" ");
-                Ficha[][] generado = new Ficha[ Integer.parseInt(pos[0]) ][ Integer.parseInt(pos[1])];
 
-                for(int i = 0; i < Integer.parseInt(pos[0]); i++){
-                    linea = br.readLine();
-                    String[] valores = linea.split(" ");
-                    for(int j = 0; j < valores.length; j++){
-                        String color;
-                        if(valores[j].charAt(1) == 'R'){
-                            color = "ROJO";
-                        }else{
-                            color = "AZUL";
-                        }
-                        Ficha ficha = new Ficha(valores[j].charAt(0), color);
-                        generado[i][j] = ficha;
-                    }
+		String nombreArchivo = "datos.txt";
 
-                    
-                }
-                this.setTablero(generado);
-                linea = br.readLine();
-                        
-            } catch (IOException e) {
-                System.err.println("Error al leer el archivo: " + e.getMessage());
-            }
+		try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+			String linea = br.readLine();
+			String[] pos = linea.split(" ");
+			Ficha[][] generado = new Ficha[Integer.parseInt(pos[0])][Integer.parseInt(pos[1])];
+
+			for (int i = 0; i < Integer.parseInt(pos[0]); i++) {
+				linea = br.readLine();
+				String[] valores = linea.split(" ");
+				for (int j = 0; j < valores.length; j++) {
+					String color = "AZUL";
+					if (valores[j].charAt(1) == 'R') {
+						color = "ROJO";
+					}
+					Ficha ficha = new Ficha(valores[j].charAt(0), color);
+					generado[i][j] = ficha;
+				}
+
+			}
+			this.setTablero(generado);
+			this.setOriginal(this.generarCopia(generado));
+			linea = br.readLine();
+
+		} catch (IOException e) {
+			System.err.println("Error al leer el archivo: " + e.getMessage());
+		}
 	}
 
 	private Ficha[][] generarCopia(Ficha[][] tablero) {

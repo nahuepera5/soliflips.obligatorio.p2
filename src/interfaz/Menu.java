@@ -5,10 +5,6 @@ import java.util.*;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-/**
- *
- * @author joaqu
- */
 public class Menu {
     
     public static void main(String[] args) {

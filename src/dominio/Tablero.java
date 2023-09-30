@@ -1,6 +1,10 @@
 package dominio;
 
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class Tablero {
 
@@ -100,7 +104,37 @@ public class Tablero {
 	}
 
 	public void generarPorLectura() {
-		// Usar un tablero especificado en el archivo "datos.txt"
+            
+            String nombreArchivo = "datos.txt";
+        
+            try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+                String linea;
+                linea = br.readLine();
+                String[] pos = linea.split(" ");
+                Ficha[][] generado = new Ficha[ Integer.parseInt(pos[0]) ][ Integer.parseInt(pos[1])];
+
+                for(int i = 0; i < Integer.parseInt(pos[0]); i++){
+                    linea = br.readLine();
+                    String[] valores = linea.split(" ");
+                    for(int j = 0; j < valores.length; j++){
+                        String color;
+                        if(valores[j].charAt(1) == 'R'){
+                            color = "ROJO";
+                        }else{
+                            color = "AZUL";
+                        }
+                        Ficha ficha = new Ficha(valores[j].charAt(0), color);
+                        generado[i][j] = ficha;
+                    }
+
+                    
+                }
+                this.setTablero(generado);
+                linea = br.readLine();
+                        
+            } catch (IOException e) {
+                System.err.println("Error al leer el archivo: " + e.getMessage());
+            }
 	}
 
 	public Ficha[][] getTablero() {

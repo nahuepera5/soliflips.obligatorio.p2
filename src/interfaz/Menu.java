@@ -11,6 +11,7 @@ public class Menu {
     
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
+        Tablero tablero = new Tablero();
         boolean salio = false;
         
         while(!salio){
@@ -19,15 +20,14 @@ public class Menu {
             
             switch (opt) { 
                 case "A":
-                    System.out.println("salio");
                     salio = true;
+                    tablero.generarPorLectura();
+                    printTablero(tablero);
                  break;
                 case "B":
-                    System.out.println("salio");
                     salio = true;
-                    Tablero predeterminado = new Tablero();
-                    predeterminado.generarPredeterminado();
-                    printTablero(predeterminado);
+                    tablero.generarPredeterminado();
+                    printTablero(tablero);
                  break;
                 case "C" :
                     System.out.println("salio");
@@ -39,12 +39,10 @@ public class Menu {
             }
              
         }
-        
-        String[][] tab = { { "/", "|", "\\" }, { "|", "|", "-" }, { "/", "|", "/"} };
     }
     
     public static void printMenu(){
-        System.out.println("a) Tomar datos del archivo “datos.txt”.");
+        System.out.println("a) Tomar datos del archivo \"datos.txt\".");
         System.out.println("b) Usar el tablero predefinido.");
         System.out.println("c) Usar un tablero al azar.");
     }

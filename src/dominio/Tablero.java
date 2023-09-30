@@ -133,8 +133,10 @@ public class Tablero {
 		int yPos;
 		Ficha f;
 		String color = "ROJO";
+		String opuesto = "AZUL";
 		if ((int) (Math.random() * 2) == 1) {
 			color = "AZUL";
+			opuesto = "ROJO";
 		}
 
 		while (nivel > 0) {
@@ -155,7 +157,18 @@ public class Tablero {
 				nivel--;
 			}
 		}
+		this.rellenarFaltantes(opuesto);
 		this.setOriginal(this.generarCopia(this.tablero));
+	}
+	
+	public void rellenarFaltantes(String color){
+		for (int i = 0; i < this.tablero.length; i++){
+			for (int j = 0; j < this.tablero[0].length; j++){
+				if (this.tablero[i][j] == null){
+					this.tablero[i][j] = Ficha.generarAleatorio(color);
+				}
+			}
+		}
 	}
 
 	public void rellenarDiagonalDerecha(Ficha f, int x, int y) {

@@ -43,7 +43,7 @@ public class Ficha {
 			// Digaonal Derecha
 			symbolo = '/';
 		}
-		return new Ficha('a', color);
+		return new Ficha(symbolo, color);
 	}
 
 	@Override

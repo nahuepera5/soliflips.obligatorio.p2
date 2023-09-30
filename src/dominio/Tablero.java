@@ -75,8 +75,8 @@ public class Tablero {
 			xPos--;
 			yPos++;
 		}
-		xPos = x;
-		yPos = y;
+		xPos = x + 1;
+		yPos = y - 1;
 		// Mirar hacia Abajo
 		while (xPos < this.tablero.length && yPos >= 0) {
 			System.out.println(x);
@@ -95,8 +95,8 @@ public class Tablero {
 			xPos--;
 			yPos--;
 		}
-		xPos = x;
-		yPos = y;
+		xPos = x + 1;
+		yPos = y + 1;
 		// Mirar hacia Abajo
 		while (xPos < this.tablero.length && yPos < this.tablero[0].length) {
 			this.tablero[xPos][yPos].invertirColor();
@@ -282,7 +282,7 @@ public class Tablero {
             boolean res = true;
             String color = this.tablero[0][0].getColor() ;
             for(int i = 0; i < this.tablero.length && res; i++){
-                for(int j = 0; i < this.tablero[0].length && res; j++){
+                for(int j = 0; j < this.tablero[0].length && res; j++){
                     if(!color.equals(this.tablero[i][j].getColor())){
                         res = false;
                     }

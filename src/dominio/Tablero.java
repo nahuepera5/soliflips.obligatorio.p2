@@ -36,11 +36,43 @@ public class Tablero {
 	}
 
 	private void cambioDiagonalDerecha(int x, int y, String color) {
-
+		int xPos = x;
+		int yPos = y;
+		// Mirar hacia Arriba
+		while (xPos >= 0 && yPos < this.tablero[0].length) {
+			this.tablero[xPos][yPos].setColor(color);
+			xPos--;
+			yPos++;
+		}
+		xPos = x;
+		yPos = y;
+		// Mirar hacia Abajo
+		while (xPos < this.tablero.length && yPos >= 0) {
+			System.out.println(x);
+			this.tablero[xPos][yPos].setColor(color);
+			xPos++;
+			yPos--;
+		}
 	}
 
 	private void cambioDiagonalIzquierda(int x, int y, String color) {
-		
+		int xPos = x;
+		int yPos = y;
+		// Mirar hacia Arriba
+		while (xPos >= 0 && yPos >= 0) {
+			this.tablero[xPos][yPos].setColor(color);
+			xPos--;
+			yPos--;
+		}
+		xPos = x;
+		yPos = y;
+		// Mirar hacia Abajo
+		while (xPos < this.tablero.length && yPos < this.tablero[0].length) {
+			this.tablero[xPos][yPos].setColor(color);
+			xPos++;
+			yPos++;
+		}
+
 	}
 
 	private void cambioVertical(int x, int y, String color) {

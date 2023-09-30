@@ -1,5 +1,7 @@
 package interfaz;
 import java.util.*;
+import dominio.Tablero;
+import dominio.Ficha;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -23,6 +25,9 @@ public class Menu {
                 case "B":
                     System.out.println("salio");
                     salio = true;
+                    Tablero predeterminado = new Tablero();
+                    predeterminado.generarPredeterminado();
+                    printTablero(predeterminado);
                  break;
                 case "C" :
                     System.out.println("salio");
@@ -36,7 +41,6 @@ public class Menu {
         }
         
         String[][] tab = { { "/", "|", "\\" }, { "|", "|", "-" }, { "/", "|", "/"} };
-        printTablero(tab);
     }
     
     public static void printMenu(){
@@ -45,9 +49,9 @@ public class Menu {
         System.out.println("c) Usar un tablero al azar.");
     }
     
-    public static void printTablero(String[][] tab){
-        int rowLength = tab.length;
-        int colLength = tab[0].length;
+    public static void printTablero(Tablero tab){
+        int rowLength = tab.getTablero().length;
+        int colLength = tab.getTablero()[0].length;
         
         // Print column number
         System.out.print("   ");
@@ -57,8 +61,8 @@ public class Menu {
         System.out.println();
 
         //Print rows
-        for(int j = 1; j <= tab.length; j++){
-            String[] row = tab[j - 1];
+        for(int j = 1; j <= tab.getTablero().length; j++){
+            Ficha[] row = tab.getTablero()[j - 1];
             
             System.out.print("   +");
             for(int i = 1; i <= colLength; i++){
@@ -68,7 +72,7 @@ public class Menu {
             
             System.out.print(j + "  |");
             for(int i = 0; i < row.length; i++){
-                System.out.print(" " + printColorText("rojo", row[i]) + "\033[0m |");
+                System.out.print(" " + printColorText(row[i].getColor(), row[i].getSymbolo() + "") + "\033[0m |");
             }
             System.out.println();
             

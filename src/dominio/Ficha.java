@@ -17,6 +17,14 @@ public class Ficha {
 		return opuesto;
 	}
 	
+	public void invertirColor(){
+		if (this.color.equals("ROJO")){
+			this.setColor("AZUL");
+		} else {
+			this.setColor("ROJO");
+		}
+	}
+	
 	@Override
 	public String toString(){
 		return "" + this.symbolo + " " + this.color;

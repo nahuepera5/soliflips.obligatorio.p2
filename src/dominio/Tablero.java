@@ -53,7 +53,7 @@ public class Tablero {
 	// Todos los posibles cambios
 	private void cambioHorizontal(int x, int y, String color) {
 		for (int i = 0; i < this.tablero[0].length; i++) {
-			this.tablero[x][i].setColor(color);
+			this.tablero[x][i].invertirColor();
 		}
 	}
 
@@ -62,7 +62,7 @@ public class Tablero {
 		int yPos = y;
 		// Mirar hacia Arriba
 		while (xPos >= 0 && yPos < this.tablero[0].length) {
-			this.tablero[xPos][yPos].setColor(color);
+			this.tablero[xPos][yPos].invertirColor();
 			xPos--;
 			yPos++;
 		}
@@ -71,7 +71,7 @@ public class Tablero {
 		// Mirar hacia Abajo
 		while (xPos < this.tablero.length && yPos >= 0) {
 			System.out.println(x);
-			this.tablero[xPos][yPos].setColor(color);
+			this.tablero[xPos][yPos].invertirColor();
 			xPos++;
 			yPos--;
 		}
@@ -82,7 +82,7 @@ public class Tablero {
 		int yPos = y;
 		// Mirar hacia Arriba
 		while (xPos >= 0 && yPos >= 0) {
-			this.tablero[xPos][yPos].setColor(color);
+			this.tablero[xPos][yPos].invertirColor();
 			xPos--;
 			yPos--;
 		}
@@ -90,7 +90,7 @@ public class Tablero {
 		yPos = y;
 		// Mirar hacia Abajo
 		while (xPos < this.tablero.length && yPos < this.tablero[0].length) {
-			this.tablero[xPos][yPos].setColor(color);
+			this.tablero[xPos][yPos].invertirColor();
 			xPos++;
 			yPos++;
 		}
@@ -99,7 +99,7 @@ public class Tablero {
 
 	private void cambioVertical(int x, int y, String color) {
 		for (int i = 0; i < this.tablero.length; i++) {
-			this.tablero[i][y].setColor(color);
+			this.tablero[i][y].invertirColor();
 		}
 	}
 

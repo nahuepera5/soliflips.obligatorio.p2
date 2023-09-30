@@ -1,11 +1,6 @@
 package interfaz;
 import java.util.*;
 import dominio.Tablero;
-import dominio.Ficha;
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 
 public class Menu {
     
@@ -13,6 +8,7 @@ public class Menu {
         Scanner in = new Scanner(System.in);
         Tablero tablero = new Tablero();
         boolean salio = false;
+        Juego juego = new Juego();
         
         while(!salio){
             printMenu();
@@ -22,16 +18,31 @@ public class Menu {
                 case "A":
                     salio = true;
                     tablero.generarPorLectura();
-                    printTablero(tablero);
+//                    printTablero(tablero);
+                    juego.startGame(tablero);
                  break;
                 case "B":
                     salio = true;
                     tablero.generarPredeterminado();
-                    printTablero(tablero);
+//                    printTablero(tablero);
+                    juego.startGame(tablero);
                  break;
                 case "C" :
-                    System.out.println("salio");
                     salio = true;
+                    int filas;
+                    int columnas;
+                    int nivel;
+                    System.out.print("ingrese el numero de filas: ");
+                    filas = in.nextInt();
+                    System.out.print("ingrese el numero de columnas: ");
+                    columnas = in.nextInt();
+                    System.out.print("ingrese el numero de nivel: ");
+                    nivel = in.nextInt();
+                    
+                    tablero.generarAleatorio(filas, columnas, nivel);
+                    
+//                    printTablero(tablero);
+                    juego.startGame(tablero);
                  break;
                 default: 
                     //Limpiar la consola
@@ -46,61 +57,5 @@ public class Menu {
         System.out.println("b) Usar el tablero predefinido.");
         System.out.println("c) Usar un tablero al azar.");
     }
-    
-    public static void printTablero(Tablero tab){
-        int rowLength = tab.getTablero().length;
-        int colLength = tab.getTablero()[0].length;
-        
-        // Print column number
-        System.out.print("   ");
-        for(int i = 1; i <= colLength; i++){
-            System.out.print("  " + i + " ");
-        }
-        System.out.println();
 
-        //Print rows
-        for(int j = 1; j <= tab.getTablero().length; j++){
-            Ficha[] row = tab.getTablero()[j - 1];
-            
-            System.out.print("   +");
-            for(int i = 1; i <= colLength; i++){
-                System.out.print("---+");
-            }
-            System.out.println();
-            
-            System.out.print(j + "  |");
-            for(int i = 0; i < row.length; i++){
-                System.out.print(" " + printColorText(row[i].getColor(), row[i].getSymbolo() + "") + "\033[0m |");
-            }
-            System.out.println();
-            
-        }
-        
-        System.out.print("   +");
-        for(int i = 1; i <= colLength; i++){
-            System.out.print("---+");
-        }
-        
-        System.out.println();
-        
-    }
-    
-    public static String printColorText(String color, String text){
-        String res = "";
-        switch(color.toUpperCase()){
-            case "AZUL":
-                res = "\033[34m";
-                break;
-            case "ROJO":
-                res = "\033[31m";
-                break;
-            default:
-                res = "\033[0m";
-        }
-        
-        res = res + text + "\033[0m";
-        
-        return res;
-    }
-
-            }
+}

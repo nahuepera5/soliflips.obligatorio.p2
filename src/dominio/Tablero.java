@@ -138,25 +138,33 @@ public class Tablero {
 			color = "AZUL";
 			opuesto = "ROJO";
 		}
-
-		while (nivel > 0) {
-			xPos = (int) (Math.random() * filas);
-			yPos = (int) (Math.random() * columnas);
-			if (this.tablero[xPos][yPos] == null) {
-				f = Ficha.generarAleatorio(color);
-				this.tablero[xPos][yPos] = f;
-				if (f.getSymbolo() == '-') {
-					this.rellenarHorizonal(f, xPos, yPos);
-				} else if (f.getSymbolo() == '|') {
-					this.rellenarVertical(f, xPos, yPos);
-				} else if (f.getSymbolo() == '/') {
-					this.rellenarDiagonalDerecha(f, xPos, yPos);
-				} else {
-					this.rellenarDiagonalIzquierda(f, xPos, yPos);
-				}
-				nivel--;
-			}
+                ArrayList <int[]> posiciones = new ArrayList<int[]>();
+                
+                while (nivel > 0) {
+                    xPos = (int) (Math.random() * filas);
+                    yPos = (int) (Math.random() * columnas);
+                    if (this.tablero[xPos][yPos] == null) {
+                            f = Ficha.generarAleatorio(color);
+                            this.tablero[xPos][yPos] = f;
+                            int[] pos = {xPos, yPos};
+                            posiciones.add(pos);
+                            nivel--;
+                    }
 		}
+                for(int[] pos: posiciones){
+                    xPos = pos[0];
+                    yPos = pos[1];
+                    f = this.tablero[xPos][yPos];
+                    if (f.getSymbolo() == '-') {
+                            this.rellenarHorizonal(f, xPos, yPos);
+                    } else if (f.getSymbolo() == '|') {
+                            this.rellenarVertical(f, xPos, yPos);
+                    } else if (f.getSymbolo() == '/') {
+                            this.rellenarDiagonalDerecha(f, xPos, yPos);
+                    } else {
+                            this.rellenarDiagonalIzquierda(f, xPos, yPos);
+                    }
+                }
 		this.rellenarFaltantes(opuesto);
 		this.setOriginal(this.generarCopia(this.tablero));
 	}

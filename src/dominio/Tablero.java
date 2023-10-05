@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
 
 public class Tablero {
 
@@ -21,7 +19,6 @@ public class Tablero {
 	}
 
 	// Todas las posibles generaciones: PREDETERMINADO, ALEATORIO, LECTURA
-	
 	public void generarPredeterminado() {
 		// Usar el tablero por defecto
 		Ficha[][] generado = {
@@ -38,12 +35,13 @@ public class Tablero {
 		soluciones.add(new Movimiento(4, 4));
 		this.setListaSoluciones(soluciones);
 	}
-
 	// -- INICIO GENERACION ALEATORIA -- 
+
 	public void generarAleatorio(int filas, int columnas, int nivel) {
+		// Usar un tablero creado en el momento
 		this.setTablero(new Ficha[filas][columnas]);
-		int xPos = -1;
-		int yPos = -1;
+		int xPos;
+		int yPos;
 		Ficha f;
 		String color = "ROJO";
 		String opuesto = "AZUL";
@@ -51,7 +49,7 @@ public class Tablero {
 			color = "AZUL";
 			opuesto = "ROJO";
 		}
-		ArrayList<Movimiento> soluciones = new ArrayList<Movimiento>();
+		ArrayList<int[]> posiciones = new ArrayList<int[]>();
 
 		while (nivel > 0) {
 			xPos = (int) (Math.random() * filas);
@@ -60,13 +58,13 @@ public class Tablero {
 				f = Ficha.generarAleatorio(color);
 				this.tablero[xPos][yPos] = f;
 				int[] pos = {xPos, yPos};
-				soluciones.add(new Movimiento(xPos, yPos));
+				posiciones.add(pos);
 				nivel--;
 			}
 		}
-		for (Movimiento mov : soluciones) {
-			xPos = mov.getX();
-			yPos = mov.getY();
+		for (int[] pos : posiciones) {
+			xPos = pos[0];
+			yPos = pos[1];
 			f = this.tablero[xPos][yPos];
 			if (f.getSymbolo() == '-') {
 				this.rellenarHorizonal(f, xPos, yPos, color);
@@ -79,7 +77,6 @@ public class Tablero {
 			}
 		}
 		this.rellenarFaltantes(opuesto);
-		this.setListaSoluciones(soluciones);
 	}
 
 	public void rellenarFaltantes(String color) {
@@ -165,13 +162,13 @@ public class Tablero {
 		for (int i = 0; i < this.tablero.length; i++) {
 			if (this.tablero[i][y] != null && this.tablero[i][y] != f) {
 				this.tablero[i][y].invertirColor();
-			} else if (this.tablero[i][x] != f) {
+			} else if (this.tablero[i][y] != f) {
 				this.tablero[i][y] = Ficha.generarAleatorio(color);
 			}
 		}
 	}
-	// --- FIN RELLENAR ---
 
+	// --- FIN RELLENAR ---
 	public void generarPorLectura() {
 
 		String nombreArchivo = "datos.txt";

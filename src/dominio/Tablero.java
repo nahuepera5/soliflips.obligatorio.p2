@@ -11,7 +11,7 @@ public class Tablero {
     private Ficha[][] tablero;
     private ArrayList<Movimiento> listaSoluciones;
     private int nivel;
-
+    
     public Tablero() {
     }
 
@@ -35,12 +35,14 @@ public class Tablero {
         soluciones.add(new Movimiento(5, 6));
         soluciones.add(new Movimiento(4, 4));
         this.setListaSoluciones(soluciones);
+        this.setNivel(3);
     }
     // -- INICIO GENERACION ALEATORIA -- 
 
     public void generarAleatorio(int filas, int columnas, int nivel) {
         // Declaramos todo lo necesario para generar
         this.setTablero(new Ficha[filas][columnas]);
+        this.setNivel(nivel);
         int xPos = -1;
         int yPos = -1;
         Ficha f;
@@ -91,7 +93,7 @@ public class Tablero {
         this.setListaSoluciones(soluciones);
     }
 
-    public void rellenarFaltantes(String color) {
+    private void rellenarFaltantes(String color) {
         for (int i = 0; i < this.tablero.length; i++) {
             for (int j = 0; j < this.tablero[0].length; j++) {
                 if (this.tablero[i][j] == null) {
@@ -101,7 +103,7 @@ public class Tablero {
         }
     }
 
-    public void rellenarDiagonalDerecha(Ficha f, int x, int y, String color) {
+    private void rellenarDiagonalDerecha(Ficha f, int x, int y, String color) {
         int xPos = x;
         int yPos = y;
 
@@ -136,7 +138,7 @@ public class Tablero {
         }
     }
 
-    public void rellenarDiagonalIzquierda(Ficha f, int x, int y, String color) {
+    private void rellenarDiagonalIzquierda(Ficha f, int x, int y, String color) {
         int xPos = x;
         int yPos = y;
 
@@ -166,7 +168,7 @@ public class Tablero {
 
     }
 
-    public void rellenarHorizonal(Ficha f, int x, int y, String color) {
+    private void rellenarHorizonal(Ficha f, int x, int y, String color) {
         for (int i = 0; i < this.tablero[0].length; i++) {
             if (this.tablero[x][i] != null && this.tablero[x][i] != f) {
                 this.tablero[x][i].invertirColor();
@@ -176,7 +178,7 @@ public class Tablero {
         }
     }
 
-    public void rellenarVertical(Ficha f, int x, int y, String color) {
+    private void rellenarVertical(Ficha f, int x, int y, String color) {
         for (int i = 0; i < this.tablero.length; i++) {
             if (this.tablero[i][y] != null && this.tablero[i][y] != f) {
                 this.tablero[i][y].invertirColor();
@@ -187,7 +189,6 @@ public class Tablero {
     }
 
     // --- FIN RELLENAR ALEATORIAMENTE ---
-    
     public void generarPorLectura() {
         // Usamos Scanner para la lectura de archivo 
         String nombreArchivo = "./test/datos.txt";
@@ -220,6 +221,7 @@ public class Tablero {
             // pueda funcionar correctamente
             ArrayList<Movimiento> soluciones = new ArrayList<>();
             int nivel = Integer.parseInt(scan.nextLine());
+            this.setNivel(nivel);
             for (int i = 0; i < nivel; i++) {
                 linea = scan.nextLine().split(" ");
                 soluciones.add(new Movimiento(Integer.parseInt(linea[0]), Integer.parseInt(linea[1])));
@@ -229,12 +231,28 @@ public class Tablero {
             System.err.println("Error al leer el archivo: " + e.getMessage());
         }
     }
+    
+    public Tablero generarCopia(){
+        Tablero copia = new Tablero();
+        Ficha[][] copiaTablero = new Ficha[this.getFilas()][this.getColumnas()];
+        for (int i = 0; i < this.getFilas(); i++)
+        {
+            for (int j = 0; j < this.getColumnas(); j++)
+            {
+                copiaTablero[i][j] = this.fichaEn(i, j);
+            }
+        }
+        copia.setTablero(copiaTablero);
+        copia.setNivel(this.getNivel());
+        copia.setListaSoluciones(this.getListaSoluciones());
+        return copia;
+    }
 
     public Ficha[][] getTablero() {
         return this.tablero;
     }
 
-    private void setTablero(Ficha[][] tablero) {
+    public void setTablero(Ficha[][] tablero) {
         this.tablero = tablero;
     }
 
@@ -252,6 +270,14 @@ public class Tablero {
 
     public int getColumnas() {
         return this.tablero[0].length;
+    }
+    
+    public int getNivel(){
+        return this.nivel;
+    }
+    
+    private void setNivel(int nivel){
+        this.nivel = nivel;
     }
 
 }

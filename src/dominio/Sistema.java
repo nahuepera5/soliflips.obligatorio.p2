@@ -11,7 +11,7 @@ public class Sistema {
      */
     // Tablero donde se guardan y generan todos los datos necesarios para jugar
     private Tablero tablero;
-    
+
     private Tablero anterior;
     // Modo elegido por el jugador
     private Modo modo;
@@ -47,7 +47,9 @@ public class Sistema {
         this.getTablero().generarPredeterminado();
     }
 
+    // El juego desde moverEn y retroceder
     public void moverEn(Movimiento nuevo) {
+        this.setAnterior(this.getTablero().generarCopia());
         this.getHistorial().add(nuevo);
         if (!this.getListaMovimientos().contains(nuevo)) {
             this.getListaMovimientos().remove(nuevo);
@@ -62,8 +64,7 @@ public class Sistema {
         this.moverEn(mov);
     }
 
-    // Todos los movimientos son por aca
-    public void cambiarSegunFichaEn(int x, int y) {
+    private void cambiarSegunFichaEn(int x, int y) {
         Ficha f = this.getTablero().fichaEn(x, y);
 
         if (f.getSymbolo() == '-') {
@@ -148,7 +149,7 @@ public class Sistema {
     }
 
     public boolean esVictoria() {
-        // Si no se necesitan
+        // 
         return this.getListaSoluciones().isEmpty();
     }
 
@@ -190,5 +191,12 @@ public class Sistema {
 
     private void setTiempoInicio(long tiempoInicio) {
         this.tiempoInicio = tiempoInicio;
+    }
+    
+    public void setAnterior(Tablero anterior){
+        this.anterior = anterior;
+    }
+    public Tablero getAnterior(){
+        return this.anterior;
     }
 }

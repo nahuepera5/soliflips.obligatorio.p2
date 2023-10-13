@@ -11,6 +11,8 @@ public class Sistema {
      */
     // Tablero donde se guardan y generan todos los datos necesarios para jugar
     private Tablero tablero;
+    
+    private Tablero anterior;
     // Modo elegido por el jugador
     private Modo modo;
     /*
@@ -26,7 +28,7 @@ public class Sistema {
     // Total jugado
     private long tiempoInicio;
 
-    Sistema() {
+    public Sistema() {
         this.setTablero(new Tablero());
         this.setTiempoInicio(System.currentTimeMillis());
         this.setListaMovimientos(new ArrayList<Movimiento>());
@@ -56,7 +58,7 @@ public class Sistema {
     }
 
     public void retroceder() {
-        Movimiento mov = this.getListaMovimientos().get(this.getListaMovimientos().size() - 1);
+        Movimiento mov = this.getHistorial().get(this.getHistorial().size() - 1);
         this.moverEn(mov);
     }
 

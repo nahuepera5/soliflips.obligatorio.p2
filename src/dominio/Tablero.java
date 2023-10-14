@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Tablero {
 
     private Ficha[][] tablero;
     private ArrayList<Movimiento> listaSoluciones;
     private int nivel;
-
+    
     public Tablero() {
     }
 
@@ -34,12 +35,14 @@ public class Tablero {
         soluciones.add(new Movimiento(5, 6));
         soluciones.add(new Movimiento(4, 4));
         this.setListaSoluciones(soluciones);
+        this.setNivel(3);
     }
     // -- INICIO GENERACION ALEATORIA -- 
 
     public void generarAleatorio(int filas, int columnas, int nivel) {
         // Declaramos todo lo necesario para generar
         this.setTablero(new Ficha[filas][columnas]);
+        this.setNivel(nivel);
         int xPos = -1;
         int yPos = -1;
         Ficha f;
@@ -90,7 +93,7 @@ public class Tablero {
         this.setListaSoluciones(soluciones);
     }
 
-    public void rellenarFaltantes(String color) {
+    private void rellenarFaltantes(String color) {
         for (int i = 0; i < this.tablero.length; i++) {
             for (int j = 0; j < this.tablero[0].length; j++) {
                 if (this.tablero[i][j] == null) {
@@ -100,15 +103,18 @@ public class Tablero {
         }
     }
 
-    public void rellenarDiagonalDerecha(Ficha f, int x, int y, String color) {
+    private void rellenarDiagonalDerecha(Ficha f, int x, int y, String color) {
         int xPos = x;
         int yPos = y;
 
         // Rellenar hacia arriba
         while (xPos >= 0 && yPos < this.tablero[0].length) {
             // Aca queremos queremos tomar los casos en que se cruza con una ficha
-            // que sea diferente a la que tomamos inicialmente y
-            
+            // que sea diferente a la que tomamos inicialmente para invertir su color
+            // O en caso de no haber ficha generamos una nueva.
+
+            // Esta logica se reproduce en los demas rellenar puesto que es la logica
+            // con la cual nos aseguramos de que sea efectivamente solucionable
             if (this.tablero[xPos][yPos] != null && this.tablero[xPos][yPos] != f) {
                 this.tablero[xPos][yPos].invertirColor();
             } else if (this.tablero[xPos][yPos] == null) {
@@ -124,7 +130,7 @@ public class Tablero {
         while (xPos < this.tablero.length && yPos >= 0) {
             if (this.tablero[xPos][yPos] != null && this.tablero[xPos][yPos] != f) {
                 this.tablero[xPos][yPos].invertirColor();
-            } else if (this.tablero[xPos][yPos] != f) {
+            } else if (this.tablero[xPos][yPos] == null) {
                 this.tablero[xPos][yPos] = Ficha.generarAleatorio(color);
             }
             xPos++;
@@ -132,7 +138,7 @@ public class Tablero {
         }
     }
 
-    public void rellenarDiagonalIzquierda(Ficha f, int x, int y, String color) {
+    private void rellenarDiagonalIzquierda(Ficha f, int x, int y, String color) {
         int xPos = x;
         int yPos = y;
 
@@ -140,7 +146,7 @@ public class Tablero {
         while (xPos >= 0 && yPos >= 0) {
             if (this.tablero[xPos][yPos] != null && this.tablero[xPos][yPos] != f) {
                 this.tablero[xPos][yPos].invertirColor();
-            } else if (this.tablero[xPos][yPos] != f) {
+            } else if (this.tablero[xPos][yPos] == null) {
                 this.tablero[xPos][yPos] = Ficha.generarAleatorio(color);
             }
             xPos--;
@@ -153,7 +159,7 @@ public class Tablero {
         while (xPos < this.tablero.length && yPos < this.tablero[0].length) {
             if (this.tablero[xPos][yPos] != null && this.tablero[xPos][yPos] != f) {
                 this.tablero[xPos][yPos].invertirColor();
-            } else if (this.tablero[xPos][yPos] != f) {
+            } else if (this.tablero[xPos][yPos] == null) {
                 this.tablero[xPos][yPos] = Ficha.generarAleatorio(color);
             }
             xPos++;
@@ -162,64 +168,83 @@ public class Tablero {
 
     }
 
-    public void rellenarHorizonal(Ficha f, int x, int y, String color) {
+    private void rellenarHorizonal(Ficha f, int x, int y, String color) {
         for (int i = 0; i < this.tablero[0].length; i++) {
             if (this.tablero[x][i] != null && this.tablero[x][i] != f) {
                 this.tablero[x][i].invertirColor();
-            } else if (this.tablero[x][i] != f) {
+            } else if (this.tablero[x][i] == null) {
                 this.tablero[x][i] = Ficha.generarAleatorio(color);
             }
         }
     }
 
-    public void rellenarVertical(Ficha f, int x, int y, String color) {
+    private void rellenarVertical(Ficha f, int x, int y, String color) {
         for (int i = 0; i < this.tablero.length; i++) {
             if (this.tablero[i][y] != null && this.tablero[i][y] != f) {
                 this.tablero[i][y].invertirColor();
-            } else if (this.tablero[i][y] != f) {
+            } else if (this.tablero[i][y] == null) {
                 this.tablero[i][y] = Ficha.generarAleatorio(color);
             }
         }
     }
 
-    // --- FIN RELLENAR ---
+    // --- FIN RELLENAR ALEATORIAMENTE ---
     public void generarPorLectura() {
+        // Usamos Scanner para la lectura de archivo 
+        String nombreArchivo = "./test/datos.txt";
 
-        String nombreArchivo = "datos.txt";
+        try {
+            Scanner scan = new Scanner(new FileReader(nombreArchivo));
+            // Tomamos las filas y columnas
+            String[] linea = scan.nextLine().split(" ");
+            int filas = Integer.parseInt(linea[0]);
+            int columnas = Integer.parseInt(linea[1]);
+            Ficha[][] generado = new Ficha[columnas][filas];
+            // Por cada fila que nos ingresa
+            for (int i = 0; i < filas; i++) {
+                linea = scan.nextLine().split(" ");
+                // Leemos por cada par de Ficha, Color
+                for (int j = 0; j < linea.length; j++) {
 
-        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
-            String linea = br.readLine();
-            String[] pos = linea.split(" ");
-            Ficha[][] generado = new Ficha[Integer.parseInt(pos[0])][Integer.parseInt(pos[1])];
-
-            for (int i = 0; i < Integer.parseInt(pos[0]); i++) {
-                linea = br.readLine();
-                String[] valores = linea.split(" ");
-                for (int j = 0; j < valores.length; j++) {
+                    // Nos fijamos en el color y por como esta diseñado podemos 
+                    // tomar directamente la ficha del input
                     String color = "AZUL";
-                    if (valores[j].charAt(1) == 'R') {
+                    if (linea[j].charAt(1) == 'R') {
                         color = "ROJO";
                     }
-                    Ficha ficha = new Ficha(valores[j].charAt(0), color);
-                    generado[i][j] = ficha;
+                    generado[i][j] = new Ficha(linea[j].charAt(0), color);
                 }
 
             }
             this.setTablero(generado);
-            linea = br.readLine();
-
+            // Lo unico que queda es tomar las soluciones para que el sistema
+            // pueda funcionar correctamente
+            ArrayList<Movimiento> soluciones = new ArrayList<>();
+            int nivel = Integer.parseInt(scan.nextLine());
+            this.setNivel(nivel);
+            for (int i = 0; i < nivel; i++) {
+                linea = scan.nextLine().split(" ");
+                soluciones.add(new Movimiento(Integer.parseInt(linea[0]), Integer.parseInt(linea[1])));
+            }
+            this.setListaSoluciones(soluciones);
         } catch (IOException e) {
             System.err.println("Error al leer el archivo: " + e.getMessage());
         }
     }
-
-    private Ficha[][] generarCopia(Ficha[][] tablero) {
-        Ficha[][] copia = new Ficha[tablero.length][tablero[0].length];
-        for (int i = 0; i < tablero.length; i++) {
-            for (int j = 0; j < tablero[0].length; j++) {
-                copia[i][j] = new Ficha(tablero[i][j].getSymbolo(), tablero[i][j].getColor());
+    
+    public Tablero generarCopia(){
+        Tablero copia = new Tablero();
+        Ficha[][] copiaTablero = new Ficha[this.getFilas()][this.getColumnas()];
+        for (int i = 0; i < this.getFilas(); i++)
+        {
+            for (int j = 0; j < this.getColumnas(); j++)
+            {
+                copiaTablero[i][j] = this.fichaEn(i, j);
             }
         }
+        copia.setTablero(copiaTablero);
+        copia.setNivel(this.getNivel());
+        copia.setListaSoluciones(this.getListaSoluciones());
         return copia;
     }
 
@@ -227,7 +252,7 @@ public class Tablero {
         return this.tablero;
     }
 
-    private void setTablero(Ficha[][] tablero) {
+    public void setTablero(Ficha[][] tablero) {
         this.tablero = tablero;
     }
 
@@ -245,6 +270,14 @@ public class Tablero {
 
     public int getColumnas() {
         return this.tablero[0].length;
+    }
+    
+    public int getNivel(){
+        return this.nivel;
+    }
+    
+    private void setNivel(int nivel){
+        this.nivel = nivel;
     }
 
 }

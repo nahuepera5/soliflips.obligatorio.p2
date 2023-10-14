@@ -83,6 +83,7 @@ public class Juego {
                 columna = resolverOpciones(sistema.getTablero().getTablero()[0].length);
                 if(!fila.equals("INVALID_OPTION")){
                     if(fila.equals("-1") && columna.equals("-1")){
+                        print.tableroAnterior();
                         sistema.retroceder();
                     }else{
                         Movimiento movimiento = new Movimiento(Integer.parseInt(fila) - 1, Integer.parseInt(columna) - 1);
@@ -90,7 +91,13 @@ public class Juego {
                         print.tableroAnteriorYActual();
                         if(sistema.esVictoria()){
                             terminarPartida = true;
-                            System.out.println("GANASTE!!!!");
+                            String successText;
+                            if(sistema.getTablero().getNivel() < 9){
+                                successText = "Ganaste, felicitaciones, ahora te invitamos a subir la dificultad " + (sistema.getTablero().getNivel() + 1);
+                            }else{
+                                successText = "Ganaste, queremos felicitarte por resolver un tablero con la maxima dificukltad";
+                            }
+                            print.success(successText);
                         }
                     }
                     
@@ -115,29 +122,29 @@ public class Juego {
         }catch(Exception e){
             switch(opcion){
                 case "X":
-                    System.out.println("Termino la partida");
                     terminarPartida = true;
                     break;
                 case "H":
-                    System.out.println("Muestro Historial");
-                    //Mejorar ui y pasarlo a print
                     ArrayList<Movimiento> historial = sistema.getHistorial();
                     if(historial.isEmpty()){
-                        System.out.println("El historial esta vacio");
+                        print.warning("El historial esta vacio");
+                    }else{
+                        print.info("Historial");
                     }
                     for(int i = 0; i < sistema.getHistorial().size(); i++){
                         System.out.print("Movimiento " + ( i + 1 ) + ": ");
                         System.out.println(sistema.getHistorial().get(i));   
                     }
+                    System.out.println();
                     break;
                 case "S":
-                    System.out.println("Muestro solucion");
-                    //Mejorar ui y pasarlo a print
+                    print.info("Solucion");
                     ArrayList<Movimiento> solucion = sistema.getListaSoluciones();
                     for(int i = 0; i < solucion.size(); i++){
                         System.out.print("Movimiento " + ( i + 1 ) + ": ");
                         System.out.println(solucion.get(i));   
                     }
+                    System.out.println();
                     break;
             }
             opcion = "INVALID_OPTION";

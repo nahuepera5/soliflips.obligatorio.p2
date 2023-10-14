@@ -29,7 +29,8 @@ public class Print {
             if (opciones.contains(res)) {
                 tengoUnaOpcionValida = true;
             } else {
-                System.out.println("\033[31m---Opcion incorrecta, por favor vuelva a intentar------------------------\033[0m");
+                this.warning("Opcion incorrecta, por favor vuelva a intentar");
+//                System.out.println("\033[31m---Opcion incorrecta, por favor vuelva a intentar------------------------\033[0m");
             }
         }
 //        in.close();
@@ -175,6 +176,72 @@ public class Print {
         System.out.println();
 
     }
+    
+    public void warning(String text){
+        int len = text.length();
+        String color = "rojo";
+        
+        System.out.print(this.printColorText(color, "+"));
+        for(int i = 0; i < len + 2; i++){
+            System.out.print(this.printColorText(color, "-"));
+        }
+        System.out.print(this.printColorText(color, "+"));
+        System.out.println();
+        System.out.print(this.printColorText(color, "| "));
+        System.out.print(this.printColorText(color, text));
+        System.out.print(this.printColorText(color, " |"));
+        System.out.println();
+        System.out.print(this.printColorText(color, "+"));
+        for(int i = 0; i < len + 2; i++){
+            System.out.print(this.printColorText(color, "-"));
+        }
+        System.out.print(this.printColorText(color, "+"));
+        System.out.println();
+    }
+    
+    public void success(String text){
+        int len = text.length();
+        String color = "verde";
+        
+        System.out.print(this.printColorText(color, "+"));
+        for(int i = 0; i < len + 2; i++){
+            System.out.print(this.printColorText(color, "-"));
+        }
+        System.out.print(this.printColorText(color, "+"));
+        System.out.println();
+        System.out.print(this.printColorText(color, "| "));
+        System.out.print(this.printColorText(color, text));
+        System.out.print(this.printColorText(color, " |"));
+        System.out.println();
+        System.out.print(this.printColorText(color, "+"));
+        for(int i = 0; i < len + 2; i++){
+            System.out.print(this.printColorText(color, "-"));
+        }
+        System.out.print(this.printColorText(color, "+"));
+        System.out.println();
+    }
+    
+    public void info(String text){
+        int len = text.length();
+        String color = "azul";
+        
+        System.out.print(this.printColorText(color, "+"));
+        for(int i = 0; i < len + 2; i++){
+            System.out.print(this.printColorText(color, "-"));
+        }
+        System.out.print(this.printColorText(color, "+"));
+        System.out.println();
+        System.out.print(this.printColorText(color, "| "));
+        System.out.print(this.printColorText(color, text));
+        System.out.print(this.printColorText(color, " |"));
+        System.out.println();
+        System.out.print(this.printColorText(color, "+"));
+        for(int i = 0; i < len + 2; i++){
+            System.out.print(this.printColorText(color, "-"));
+        }
+        System.out.print(this.printColorText(color, "+"));
+        System.out.println();
+    }
 
     public String printColorText(String color, String text) {
         String res = "";
@@ -184,6 +251,9 @@ public class Print {
                 break;
             case "ROJO":
                 res = "\033[31m";
+                break;
+            case "VERDE":
+                res = "\u001B[32m";
                 break;
             default:
                 res = "\033[0m";

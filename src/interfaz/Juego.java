@@ -1,60 +1,76 @@
 package interfaz;
 
-import dominio.Ficha;
-import dominio.Tablero;
 import dominio.Movimiento;
 import dominio.Sistema;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- *
- * @author nahuel
- */
 public class Juego {
+    /*
+    Juego: en esta clase se encuentra la funcion main y se encarga de definir toda la jugabilidad.
+    */
     static Sistema sistema;
     static Print print;
-    static boolean terminarJuego = false;
-    static boolean terminarPartida = false;
     static Scanner in = new Scanner(System.in);
-
+    
+    //Mientras terminarJuego se encuentre en false el programa va a estar corriendo.
+    static boolean terminarJuego = false;
+    
+    //Cuando se inicie una partida (es decir, tengamos un tablero sobre el cual jugar y podamos ingresar movimientos)
+    //La partida va a continuar mientras terminarPartida se encuentre como false.
+    static boolean terminarPartida = false;
     
     public static void main(String[] args) {
-        sistema = new Sistema();
-        print = new Print(sistema);
         while(!terminarJuego){
+            sistema = new Sistema();
+            print = new Print(sistema);
             String opcion = print.menuPrincipal();
 
             switch (opcion) {
                 case "A":
                     sistema.iniciarPorLectura();
-                    print.tablero();
                     Juego.jugar();
                     break;
                 case "B":
                     sistema.iniciarPredeterminado();
-                    print.tablero();
-                    Juego.jugar();
-    //                this.startGame();
+                    Juego.jugar();;
                     break;
                 case "C":
                     // Se piden Fila, Columna y Nivel para generar un tablero aleatorio e iniciar la partida
-//                    Scanner in = new Scanner(System.in);
-                    int filas;
-                    int columnas;
-                    int nivel;
-                    System.out.print("ingrese el numero de filas: ");
-                    filas = in.nextInt();
-                    System.out.print("ingrese el numero de columnas: ");
-                    columnas = in.nextInt();
-                    System.out.print("ingrese el numero de nivel: ");
-                    nivel = in.nextInt();
-                    in.nextLine();
+                    boolean tengoUnaOpcionValida = false;
 
-                    sistema.iniciarAleatorio(filas, columnas, nivel);
-                    print.tablero();
+                    while(!tengoUnaOpcionValida){
+                        int filas;
+                        int columnas;
+                        int nivel;
+                        int nivelMaximoSegunDimensiones;
+
+                        System.out.print("ingrese el numero de filas: ");
+                        filas = in.nextInt();
+                        if(filas < 3 || filas > 9){
+                            print.warning("Cuidado! seleccione un numero entre 3 y 9 para las filas");
+                            continue;
+                        }
+                        System.out.print("ingrese el numero de columnas: ");
+                        columnas = in.nextInt();
+                        if(columnas < 3 || columnas > 9){
+                            print.warning("Cuidado! seleccione un numero entre 3 y 9 para las filas");
+                            continue;
+                        }
+
+                        nivelMaximoSegunDimensiones = filas * columnas;
+
+                        System.out.print("ingrese el numero de nivel: ");
+                        nivel = in.nextInt();
+                        if( nivel > nivelMaximoSegunDimensiones || nivel < 1 || nivel > 8){
+                            print.warning("Cuidado! no seleccionaste un nivel valido para este tablero. Recuerda que los niveles validos son de 1 a 8");
+                        }else{
+                            tengoUnaOpcionValida = true;
+                            sistema.iniciarAleatorio(filas, columnas, nivel);
+                        }
+                    }
+                    in.nextLine();
                     Juego.jugar();
-    //                this.startGame();
 
                     break;
                 case "D":
@@ -67,9 +83,8 @@ public class Juego {
     }
 
     public static void jugar() {
+        print.tablero();
         terminarPartida = false;
-//        printTablero(tab);
-//        System.out.println(Sistema.esVictoria());
         while(!terminarPartida){
             String fila;
             String columna;
@@ -82,9 +97,11 @@ public class Juego {
                 System.out.print("columna: ");
                 columna = resolverOpciones(sistema.getTablero().getTablero()[0].length);
                 if(!fila.equals("INVALID_OPTION")){
-                    if(fila.equals("-1") && columna.equals("-1")){
-                        print.tableroAnterior();
-                        sistema.retroceder();
+                    if(fila.equals("-1")){
+                        if(columna.equals("-1")){
+                            print.tableroAnterior();
+                            sistema.retroceder();
+                        }
                     }else{
                         Movimiento movimiento = new Movimiento(Integer.parseInt(fila) - 1, Integer.parseInt(columna) - 1);
                         sistema.moverEn(movimiento);
@@ -95,31 +112,29 @@ public class Juego {
                             if(sistema.getTablero().getNivel() < 9){
                                 successText = "Ganaste, felicitaciones, ahora te invitamos a subir la dificultad " + (sistema.getTablero().getNivel() + 1);
                             }else{
-                                successText = "Ganaste, queremos felicitarte por resolver un tablero con la maxima dificukltad";
+                                successText = "Ganaste, queremos felicitarte por resolver un tablero con la maxima dificultad a";
                             }
                             print.success(successText);
                         }
-                    }
-                    
+                    }   
                 }
-                
             }
-            
-            
         }
-//        printTablero2(tab, tab);
     }
     
     public static String resolverOpciones(int maxLength){
         String opcion = in.nextLine().toUpperCase();
         
+        //Revisa si se ingreso un numero o una cadena
         try{
+            //Si es un numero se revisa si es una posicion valida para el tablero
             int opt = Integer.parseInt(opcion);
             if((opt <= 0 && opt != -1) || opt > maxLength ){
                 opcion = "INVALID_OPTION";
-                System.out.println("Mostrar aviso de que ingreso mal algun valor");
+                print.warning("No se encuentra la posicion en el tablero, por favor vuelva a ingresar el movimiento");
             }
         }catch(Exception e){
+            //En el caso de que se ingrese una cadena se revisa si esta dentro de las opciones validas y en caso correcto se ejecuta la funcion correspondiente.
             switch(opcion){
                 case "X":
                     terminarPartida = true;
@@ -147,32 +162,11 @@ public class Juego {
                     System.out.println();
                     break;
             }
+            //cuando juego recibe INVALID_OPTION no hace ningun movimiento y vuelve a pedir fila y columna.
             opcion = "INVALID_OPTION";
         }
         
         return opcion;
-    }
-
-    public static void printMenuMovimiento() {
-//        System.o
-    }
-
-    public static String printColorText(String color, String text) {
-        String res = "";
-        switch (color.toUpperCase()) {
-            case "AZUL":
-                res = "\033[34m";
-                break;
-            case "ROJO":
-                res = "\033[31m";
-                break;
-            default:
-                res = "\033[0m";
-        }
-
-        res = res + text + "\033[0m";
-
-        return res;
     }
 
 }

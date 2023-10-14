@@ -4,10 +4,13 @@ import dominio.Ficha;
 import dominio.Tablero;
 import dominio.Sistema;
 import java.util.*;
-import static interfaz.Juego.printColorText;
 
 public class Print {
     Sistema sistema;
+    
+    /*
+    Print: En esta clase se definen la mayoria la ui, como puede ser: El tablero, avisos y menus.
+    */
     
     public Print(Sistema sistema){
         this.setSistema(sistema);
@@ -30,10 +33,8 @@ public class Print {
                 tengoUnaOpcionValida = true;
             } else {
                 this.warning("Opcion incorrecta, por favor vuelva a intentar");
-//                System.out.println("\033[31m---Opcion incorrecta, por favor vuelva a intentar------------------------\033[0m");
             }
         }
-//        in.close();
         return res;
     }
 

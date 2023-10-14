@@ -27,6 +27,11 @@ public class Movimiento {
     }
     
     @Override
+    public String toString(){
+        return "[ " + (this.x + 1) + ", " + (this.y + 1) + " ]";
+    }
+    
+    @Override
     public boolean equals(Object o){
         Movimiento mov = (Movimiento) o;
         return this.x == mov.getX() && this.y == mov.getY();

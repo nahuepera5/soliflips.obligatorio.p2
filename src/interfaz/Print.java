@@ -7,6 +7,11 @@ import java.util.*;
 import static interfaz.Juego.printColorText;
 
 public class Print {
+    Sistema sistema;
+    
+    public Print(Sistema sistema){
+        this.setSistema(sistema);
+    }
 
     public String menuPrincipal() {
         String res = "";
@@ -31,8 +36,8 @@ public class Print {
         return res;
     }
 
-    public void tablero(Sistema sistema) {
-        Tablero tab = sistema.getTablero();
+    public void tablero() {
+        Tablero tab = this.getSistema().getTablero();
         int rowLength = tab.getTablero().length;
         int colLength = tab.getTablero()[0].length;
 
@@ -69,8 +74,109 @@ public class Print {
         System.out.println();
 
     }
+    
+        public void tableroAnterior() {
+        Tablero tab = this.getSistema().getAnterior();
+        int rowLength = tab.getTablero().length;
+        int colLength = tab.getTablero()[0].length;
 
-    public static String printColorText(String color, String text) {
+        // Print column number
+        System.out.print("   ");
+        for (int i = 1; i <= colLength; i++) {
+            System.out.print("  " + i + " ");
+        }
+        System.out.println();
+
+        //Print rows
+        for (int j = 1; j <= tab.getTablero().length; j++) {
+            Ficha[] row = tab.getTablero()[j - 1];
+
+            System.out.print("  +");
+            for (int i = 1; i <= colLength; i++) {
+                System.out.print("---+");
+            }
+            System.out.println();
+
+            System.out.print(j + " |");
+            for (int i = 0; i < row.length; i++) {
+                System.out.print(" " + printColorText(row[i].getColor(), row[i].getSymbolo() + "") + "\033[0m |");
+            }
+            System.out.println();
+
+        }
+
+        System.out.print("  +");
+        for (int i = 1; i <= colLength; i++) {
+            System.out.print("---+");
+        }
+
+        System.out.println();
+
+    }
+        
+    public void tableroAnteriorYActual() {
+        Tablero tab2 = this.getSistema().getTablero();
+        Tablero tab = this.getSistema().getAnterior();
+        int rowLength = tab.getTablero().length;
+        int colLength = tab.getTablero()[0].length;
+
+        // Print column number
+        System.out.print("  ");
+        for (int i = 1; i <= colLength; i++) {
+            System.out.print("  " + i + " ");
+        }
+        System.out.print("      ");
+        System.out.print("   ");
+        for (int i = 1; i <= colLength; i++) {
+            System.out.print("  " + i + " ");
+        }
+
+        System.out.println();
+
+        //Print rows
+        for (int j = 1; j <= tab.getTablero().length; j++) {
+            Ficha[] row = tab.getTablero()[j - 1];
+            Ficha[] row2 = tab2.getTablero()[j - 1];
+
+            System.out.print("  +");
+            for (int i = 1; i <= colLength; i++) {
+                System.out.print("---+");
+            }
+            System.out.print("      ");
+            System.out.print("  +");
+            for (int i = 1; i <= colLength; i++) {
+                System.out.print("---+");
+            }
+            System.out.println();
+
+            System.out.print(j + " |");
+            for (int i = 0; i < row.length; i++) {
+                System.out.print(" " + printColorText(row[i].getColor(), row[i].getSymbolo() + "") + "\033[0m |");
+            }
+            System.out.print("  =>  ");
+            System.out.print(j + " |");
+            for (int i = 0; i < row.length; i++) {
+                System.out.print(" " + printColorText(row2[i].getColor(), row2[i].getSymbolo() + "") + "\033[0m |");
+            }
+            System.out.println();
+
+        }
+
+        System.out.print("  +");
+        for (int i = 1; i <= colLength; i++) {
+            System.out.print("---+");
+        }
+        System.out.print("      ");
+        System.out.print("  +");
+        for (int i = 1; i <= colLength; i++) {
+            System.out.print("---+");
+        }
+
+        System.out.println();
+
+    }
+
+    public String printColorText(String color, String text) {
         String res = "";
         switch (color.toUpperCase()) {
             case "AZUL":
@@ -86,6 +192,14 @@ public class Print {
         res = res + text + "\033[0m";
 
         return res;
+    }
+    
+    private Sistema getSistema(){
+        return this.sistema;
+    }
+    
+    private void setSistema(Sistema sistema){
+        this.sistema = sistema;
     }
 
 }

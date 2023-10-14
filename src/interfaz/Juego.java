@@ -2,7 +2,9 @@ package interfaz;
 
 import dominio.Ficha;
 import dominio.Tablero;
+import dominio.Movimiento;
 import dominio.Sistema;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -11,7 +13,7 @@ import java.util.Scanner;
  */
 public class Juego {
     static Sistema sistema;
-    static Print print = new Print();
+    static Print print;
     static boolean terminarJuego = false;
     static boolean terminarPartida = false;
     static Scanner in = new Scanner(System.in);
@@ -19,18 +21,19 @@ public class Juego {
     
     public static void main(String[] args) {
         sistema = new Sistema();
+        print = new Print(sistema);
         while(!terminarJuego){
             String opcion = print.menuPrincipal();
 
             switch (opcion) {
                 case "A":
                     sistema.iniciarPorLectura();
-                    print.tablero(sistema);
+                    print.tablero();
                     Juego.jugar();
                     break;
                 case "B":
                     sistema.iniciarPredeterminado();
-                    print.tablero(sistema);
+                    print.tablero();
                     Juego.jugar();
     //                this.startGame();
                     break;
@@ -49,7 +52,7 @@ public class Juego {
                     in.nextLine();
 
                     sistema.iniciarAleatorio(filas, columnas, nivel);
-                    print.tablero(sistema);
+                    print.tablero();
                     Juego.jugar();
     //                this.startGame();
 
@@ -80,10 +83,11 @@ public class Juego {
                 columna = resolverOpciones(sistema.getTablero().getTablero()[0].length);
                 if(!fila.equals("INVALID_OPTION")){
                     if(fila.equals("-1") && columna.equals("-1")){
-                        System.out.println("retroceder un paso");
+                        sistema.retroceder();
                     }else{
-                        sistema.cambiarSegunFichaEn(Integer.parseInt(fila) - 1, Integer.parseInt(columna) - 1);
-                        print.tablero(sistema);
+                        Movimiento movimiento = new Movimiento(Integer.parseInt(fila) - 1, Integer.parseInt(columna) - 1);
+                        sistema.moverEn(movimiento);
+                        print.tableroAnteriorYActual();
                         if(sistema.esVictoria()){
                             terminarPartida = true;
                             System.out.println("GANASTE!!!!");
@@ -116,9 +120,24 @@ public class Juego {
                     break;
                 case "H":
                     System.out.println("Muestro Historial");
+                    //Mejorar ui y pasarlo a print
+                    ArrayList<Movimiento> historial = sistema.getHistorial();
+                    if(historial.isEmpty()){
+                        System.out.println("El historial esta vacio");
+                    }
+                    for(int i = 0; i < sistema.getHistorial().size(); i++){
+                        System.out.print("Movimiento " + ( i + 1 ) + ": ");
+                        System.out.println(sistema.getHistorial().get(i));   
+                    }
                     break;
                 case "S":
                     System.out.println("Muestro solucion");
+                    //Mejorar ui y pasarlo a print
+                    ArrayList<Movimiento> solucion = sistema.getListaSoluciones();
+                    for(int i = 0; i < solucion.size(); i++){
+                        System.out.print("Movimiento " + ( i + 1 ) + ": ");
+                        System.out.println(solucion.get(i));   
+                    }
                     break;
             }
             opcion = "INVALID_OPTION";
@@ -127,78 +146,8 @@ public class Juego {
         return opcion;
     }
 
-    public static void manejarOpcionesIngresadas(String opc) {
-        if (opc.equals("X")) {
-
-        } else if (opc.equals("H")) {
-
-        } else if (opc.equals("S")) {
-
-        }
-    }
-
     public static void printMenuMovimiento() {
 //        System.o
-    }
-
-    public static void printTablero2(Tablero tab, Tablero tab2) {
-        int rowLength = tab.getTablero().length;
-        int colLength = tab.getTablero()[0].length;
-
-        // Print column number
-        System.out.print("  ");
-        for (int i = 1; i <= colLength; i++) {
-            System.out.print("  " + i + " ");
-        }
-        System.out.print("      ");
-        System.out.print("   ");
-        for (int i = 1; i <= colLength; i++) {
-            System.out.print("  " + i + " ");
-        }
-
-        System.out.println();
-
-        //Print rows
-        for (int j = 1; j <= tab.getTablero().length; j++) {
-            Ficha[] row = tab.getTablero()[j - 1];
-            Ficha[] row2 = tab2.getTablero()[j - 1];
-
-            System.out.print("  +");
-            for (int i = 1; i <= colLength; i++) {
-                System.out.print("---+");
-            }
-            System.out.print("      ");
-            System.out.print("  +");
-            for (int i = 1; i <= colLength; i++) {
-                System.out.print("---+");
-            }
-            System.out.println();
-
-            System.out.print(j + " |");
-            for (int i = 0; i < row.length; i++) {
-                System.out.print(" " + printColorText(row[i].getColor(), row[i].getSymbolo() + "") + "\033[0m |");
-            }
-            System.out.print("  =>  ");
-            System.out.print(j + " |");
-            for (int i = 0; i < row.length; i++) {
-                System.out.print(" " + printColorText(row2[i].getColor(), row2[i].getSymbolo() + "") + "\033[0m |");
-            }
-            System.out.println();
-
-        }
-
-        System.out.print("  +");
-        for (int i = 1; i <= colLength; i++) {
-            System.out.print("---+");
-        }
-        System.out.print("      ");
-        System.out.print("  +");
-        for (int i = 1; i <= colLength; i++) {
-            System.out.print("---+");
-        }
-
-        System.out.println();
-
     }
 
     public static String printColorText(String color, String text) {

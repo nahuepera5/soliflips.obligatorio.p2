@@ -26,7 +26,7 @@ public class Sistema {
     // Total jugado
     private long tiempoInicio;
 
-    Sistema() {
+    public Sistema() {
         this.setTablero(new Tablero());
         this.setTiempoInicio(System.currentTimeMillis());
         this.setListaMovimientos(new ArrayList<Movimiento>());

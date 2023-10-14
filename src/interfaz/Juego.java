@@ -10,12 +10,15 @@ import java.util.Scanner;
  * @author nahuel
  */
 public class Juego {
-//    public Sistema sis = new Sistema();
+    static Sistema sistema;
+    static Print print = new Print();
+    static boolean terminarJuego = false;
+    static boolean terminarPartida = false;
+    static Scanner in = new Scanner(System.in);
+
     
     public static void main(String[] args) {
-        Sistema sistema = new Sistema();
-        Print print = new Print();
-        boolean terminarJuego = false;
+        sistema = new Sistema();
         while(!terminarJuego){
             String opcion = print.menuPrincipal();
 
@@ -23,16 +26,17 @@ public class Juego {
                 case "A":
                     sistema.iniciarPorLectura();
                     print.tablero(sistema);
-                    Juego.jugar(sistema);
+                    Juego.jugar();
                     break;
                 case "B":
                     sistema.iniciarPredeterminado();
                     print.tablero(sistema);
+                    Juego.jugar();
     //                this.startGame();
                     break;
                 case "C":
                     // Se piden Fila, Columna y Nivel para generar un tablero aleatorio e iniciar la partida
-                    Scanner in = new Scanner(System.in);
+//                    Scanner in = new Scanner(System.in);
                     int filas;
                     int columnas;
                     int nivel;
@@ -42,9 +46,11 @@ public class Juego {
                     columnas = in.nextInt();
                     System.out.print("ingrese el numero de nivel: ");
                     nivel = in.nextInt();
-                    in.close();
+                    in.nextLine();
 
                     sistema.iniciarAleatorio(filas, columnas, nivel);
+                    print.tablero(sistema);
+                    Juego.jugar();
     //                this.startGame();
 
                     break;
@@ -57,28 +63,68 @@ public class Juego {
 
     }
 
-    public static void jugar(Sistema sistema) {
-        Scanner in = new Scanner(System.in);
-        Print print = new Print();
+    public static void jugar() {
+        terminarPartida = false;
 //        printTablero(tab);
 //        System.out.println(Sistema.esVictoria());
-        boolean termino = false;
-        while(!termino){
+        while(!terminarPartida){
             String fila;
             String columna;
+            
+            //Pedir fila para hacer una jugada
             System.out.print("fila: ");
-            fila = in.nextLine();
-            System.out.print("columna: ");
-            columna = in.nextLine();
-            sistema.cambiarSegunFichaEn(Integer.parseInt(fila) - 1, Integer.parseInt(columna) - 1);
-            print.tablero(sistema);
-            if(sistema.esVictoria()){
-                termino = true;
-                System.out.println("GANASTE!!!!");
-            }else{
+            fila = resolverOpciones(sistema.getTablero().getTablero().length);
+            if(!fila.equals("INVALID_OPTION")){
+                //Pedir columna para hacer una jugada
+                System.out.print("columna: ");
+                columna = resolverOpciones(sistema.getTablero().getTablero()[0].length);
+                if(!fila.equals("INVALID_OPTION")){
+                    if(fila.equals("-1") && columna.equals("-1")){
+                        System.out.println("retroceder un paso");
+                    }else{
+                        sistema.cambiarSegunFichaEn(Integer.parseInt(fila) - 1, Integer.parseInt(columna) - 1);
+                        print.tablero(sistema);
+                        if(sistema.esVictoria()){
+                            terminarPartida = true;
+                            System.out.println("GANASTE!!!!");
+                        }
+                    }
+                    
+                }
+                
             }
+            
+            
         }
 //        printTablero2(tab, tab);
+    }
+    
+    public static String resolverOpciones(int maxLength){
+        String opcion = in.nextLine().toUpperCase();
+        
+        try{
+            int opt = Integer.parseInt(opcion);
+            if((opt <= 0 && opt != -1) || opt > maxLength ){
+                opcion = "INVALID_OPTION";
+                System.out.println("Mostrar aviso de que ingreso mal algun valor");
+            }
+        }catch(Exception e){
+            switch(opcion){
+                case "X":
+                    System.out.println("Termino la partida");
+                    terminarPartida = true;
+                    break;
+                case "H":
+                    System.out.println("Muestro Historial");
+                    break;
+                case "S":
+                    System.out.println("Muestro solucion");
+                    break;
+            }
+            opcion = "INVALID_OPTION";
+        }
+        
+        return opcion;
     }
 
     public static void manejarOpcionesIngresadas(String opc) {

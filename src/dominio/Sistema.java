@@ -32,6 +32,7 @@ public class Sistema {
         this.setTablero(new Tablero());
         this.setTiempoInicio(System.currentTimeMillis());
         this.setListaMovimientos(new ArrayList<Movimiento>());
+        this.setHistorial(new ArrayList<>());
     }
 
     // Inciamos el tablero segun el modo pedido
@@ -52,9 +53,9 @@ public class Sistema {
         this.setAnterior(this.getTablero().generarCopia());
         this.getHistorial().add(nuevo);
         if (!this.getListaMovimientos().contains(nuevo)) {
-            this.getListaMovimientos().remove(nuevo);
-        } else {
             this.getListaMovimientos().add(nuevo);
+        } else {
+            this.getListaMovimientos().remove(nuevo);
         }
         this.cambiarSegunFichaEn(nuevo.getX(), nuevo.getY());
     }
@@ -136,7 +137,7 @@ public class Sistema {
         // Si para cada solucion del tablero hay un movimiento significativo
         // Asociado y nada mas. Entonces estas en la solucion
         ArrayList<Movimiento> soluciones = (ArrayList<Movimiento>) this.getTablero().getListaSoluciones().clone();
-
+        
         for (Movimiento mov : this.listaMovimientos) {
             if (soluciones.contains(mov)) {
                 soluciones.remove(mov);
@@ -150,7 +151,18 @@ public class Sistema {
 
     public boolean esVictoria() {
         // 
-        return this.getListaSoluciones().isEmpty();
+        Tablero tab = this.getTablero();
+        boolean res = true;
+        String color = tab.getTablero()[0][0].getColor();
+        for (int i = 0; i < tab.getTablero().length && res; i++) {
+            for (int j = 0; j < tab.getTablero()[0].length && res; j++) {
+                if (!color.equals(tab.getTablero()[i][j].getColor())) {
+                    res = false;
+                }
+            }
+        }
+
+        return res;
     }
 
     public Tablero getTablero() {
@@ -177,7 +189,7 @@ public class Sistema {
         this.listaMovimientos = listaMovimientos;
     }
 
-    private ArrayList<Movimiento> getHistorial() {
+    public ArrayList<Movimiento> getHistorial() {
         return this.historial;
     }
 

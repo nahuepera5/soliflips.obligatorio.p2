@@ -199,7 +199,7 @@ public class Tablero {
             String[] linea = scan.nextLine().split(" ");
             int filas = Integer.parseInt(linea[0]);
             int columnas = Integer.parseInt(linea[1]);
-            Ficha[][] generado = new Ficha[columnas][filas];
+            Ficha[][] generado = new Ficha[filas][columnas];
             // Por cada fila que nos ingresa
             for (int i = 0; i < filas; i++) {
                 linea = scan.nextLine().split(" ");
@@ -239,7 +239,7 @@ public class Tablero {
         {
             for (int j = 0; j < this.getColumnas(); j++)
             {
-                copiaTablero[i][j] = this.fichaEn(i, j);
+                copiaTablero[i][j] = new Ficha(this.tablero[i][j].getSymbolo(), this.tablero[i][j].getColor());
             }
         }
         copia.setTablero(copiaTablero);

@@ -1,5 +1,10 @@
 package interfaz;
 
+/*
+    Joaquin Bonora: 305371
+    Nahuel Merlo:   302561 
+*/
+
 import dominio.Ficha;
 import dominio.Tablero;
 import dominio.Sistema;

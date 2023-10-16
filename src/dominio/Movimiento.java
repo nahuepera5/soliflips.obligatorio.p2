@@ -1,5 +1,10 @@
 package dominio;
 
+/*
+    Joaquin Bonora: 305371
+    Nahuel Merlo:   302561 
+*/
+
 public class Movimiento {
 
     private int x;
